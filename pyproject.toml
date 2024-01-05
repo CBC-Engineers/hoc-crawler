@@ -1,0 +1,24 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "hoc_crawler"
+authors = [{name = "Ricky L Teachey Jr", email = "ricky@teachey.org"}]
+license = {file = "LICENSE"}
+classifiers = ["License :: OSI Approved :: MIT License"]
+dynamic = ["version", "description"]
+dependencies = [
+    "excalc-py>=0.0.4",
+    "pint>=0.23",
+    "aashto-plastic-pipe-check @ git+https://github.com/CBC-Engineers/aashto-plastic-pipe-check@v0.0.1",
+]
+
+
+[project.urls]
+Home = "https://github.com/CBC-Engineers/hoc_crawler"
+
+[project.optional-dependencies]
+test = [
+    "pytest >=7.4",
+]
