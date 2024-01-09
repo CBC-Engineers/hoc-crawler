@@ -17,7 +17,7 @@ class InvalidHOC(CrawlerError):
 
 
 class SupportsHOC(Protocol):
-    def __call__(self, H: Quantity|float, H_gw: Quantity|float, *args, **kwargs):
+    def __call__(self, H: Quantity | float, H_gw: Quantity | float, *args, **kwargs):
         ...
 
 
@@ -28,9 +28,9 @@ class TargetHOC(StrEnum):
 
 def crawl(
     func: SupportsHOC,
-    target: TargetHOC|str,
+    target: TargetHOC | str,
     flooded: bool = False,
-    hoc: tuple[int|float|None]|HOCRange|None = None,
+    hoc: tuple[int | float | None] | HOCRange | None = None,
     *args,
     **kwargs,
 ) -> float:
@@ -45,7 +45,9 @@ def crawl(
         case str():
             target = TargetHOC(target.lower())
         case _:
-            raise CrawlerError(f"target type must be str ('min' or 'max') or TargetHOC, not {type(target).__name__}")
+            raise CrawlerError(
+                f"target type must be str ('min' or 'max') or TargetHOC, not {type(target).__name__}"
+            )
 
     match hoc:
         case None:
@@ -57,7 +59,7 @@ def crawl(
         case value:
             hoc = hoc_range(value)
 
-    iter_hoc = {target.max:hoc.iter_up(), target.min:hoc.iter_down()}[target]
+    iter_hoc = {target.max: hoc.iter_up(), target.min: hoc.iter_down()}[target]
     prev_hoc = None
 
     for h in iter_hoc:
@@ -75,4 +77,6 @@ def crawl(
     if prev_hoc is not None:
         return prev_hoc
     else:
-        raise CrawlerError(f"failed to successfully determine {target} height of cover.")
+        raise CrawlerError(
+            f"failed to successfully determine {target} height of cover."
+        )

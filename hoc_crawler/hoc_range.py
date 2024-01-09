@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import overload
+from .all_equal import all_equal
 
 
 class HOCRangeError(Exception):
@@ -89,18 +90,34 @@ def hoc_range(*args) -> HOCRange:
 
     match args:
         case ():
-            start, step, stop = 1.0, 1.0, None
+            start, stop, step = 1.0, None, 1.0
         case (start,) if _check("start", start):
             step, stop = 1.0, None
         case (start, stop) if _check("start", start) and _check("stop", stop):
             step = 1.0
-        case (start, step, stop) if _check("start", start) and _check(
+        case (start, stop, step) if _check("start", start) and _check(
             "step", step
         ) and _check("stop", stop):
             pass
         case _:
             raise HOCRangeError("Invalid arguments.")
-    return HOCRange(start, stop, step)
+
+    # support units - assume pint API of hasattr(value, "units") == True
+    sss_dict = dict(start=start, stop=stop, step=step)
+    # get all units (None if no unit)
+    units = {k: getattr(v, "units", None) for k, v in sss_dict.items()}
+    # make sure all values have units, or if a value doesn't have units, figure out its units based on the values that
+    # have units (but in that case all values with units must have the same units)
+    if any(v is not None for v in units.values()):
+        first_unit = next(v for k, v in units.items() if v is not None)
+        no_units = {k: v for k, v in sss_dict.items() if not hasattr(v, "units")}
+        if not all_equal(units.values(), None) and no_units:
+            raise HOCRangeError(
+                f'Missing units from: {"; ".join(f"{k}= {v}" for k,v in no_units.items())}'
+            )
+        sss_dict.update({k: v * first_unit for k, v in no_units.items()})
+
+    return HOCRange(**sss_dict)
 
 
 def _check(arg_name, value):

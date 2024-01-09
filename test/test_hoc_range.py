@@ -1,6 +1,9 @@
 import pytest
 from pytest import fixture
 from hoc_crawler.hoc_range import hoc_range, HOCRangeError
+from pint import UnitRegistry
+
+U = UnitRegistry()
 
 
 @fixture(
@@ -9,6 +12,9 @@ from hoc_crawler.hoc_range import hoc_range, HOCRangeError
         (1.0,),
         (1.0, 1.0),
         (1.0, 1.0, 1.0),
+        (1.0 * U.ft, 1.0 * U.ft, 1.0 * U.ft),
+        (1.0 * U.ft, 1.0 * U.ft, 1.0),
+        (1.0 * U.ft, 1.0, 1.0),
     ]
 )
 def args(request):
@@ -24,6 +30,7 @@ def test_hoc_range(args):
         (-1.0,),
         (1.0, -1.0),
         (1.0, 1.0, -1.0),
+        (1.0 * U.ft, 1.0 * U.m, 1.0),
     ]
 )
 def bad_args(request):

@@ -8,6 +8,7 @@ from hoc_crawler.hoc_crawler import InvalidHOC, SupportsHOC, CrawlerError
 def func_all_invalid():
     def f(H, H_gw):
         raise InvalidHOC()
+
     return f
 
 
@@ -17,17 +18,20 @@ def func_10_max():
         if H <= 10:
             return "OK"
         raise InvalidHOC()
+
     return f
 
 
-@fixture(params=[
-    (dict(target="Max", flooded=True, hoc=(2, 9)), 9),
-    (dict(target="Max", flooded=True, hoc=(2, 10)), 10),
-    (dict(target="Max", flooded=True, hoc=(2, 11)), 10),
-    (dict(target="Min", flooded=True, hoc=(1, 1)), 1),
-    (dict(target="Min", flooded=True, hoc=(2, 1)), 1),
-    (dict(target="Min", flooded=True, hoc=(2, 0)), 0),
-])
+@fixture(
+    params=[
+        (dict(target="Max", flooded=True, hoc=(2, 9)), 9),
+        (dict(target="Max", flooded=True, hoc=(2, 10)), 10),
+        (dict(target="Max", flooded=True, hoc=(2, 11)), 10),
+        (dict(target="Min", flooded=True, hoc=(1, 1)), 1),
+        (dict(target="Min", flooded=True, hoc=(2, 1)), 1),
+        (dict(target="Min", flooded=True, hoc=(2, 0)), 0),
+    ]
+)
 def kwargs_and_result(request):
     return request.param
 
