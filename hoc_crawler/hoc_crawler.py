@@ -1,7 +1,3 @@
-"""Figure out the height of cover limits for buried pipes."""
-
-__version__ = "0.0.1"
-
 from enum import StrEnum, auto
 from typing import Protocol
 from pint import Quantity
@@ -17,7 +13,7 @@ class InvalidHOC(CrawlerError):
 
 
 class SupportsHOC(Protocol):
-    def __call__(self, H: Quantity | float, H_gw: Quantity | float, *args, **kwargs):
+    def __call__(self, H: Quantity | float, *args, **kwargs):
         ...
 
 
