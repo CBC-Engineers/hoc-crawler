@@ -1,6 +1,5 @@
 from enum import StrEnum, auto
 from typing import Protocol
-from pint import Quantity
 from .hoc_range import HOCRange, hoc_range
 
 
@@ -13,7 +12,7 @@ class InvalidHOC(CrawlerError):
 
 
 class SupportsHOC(Protocol):
-    def __call__(self, H: Quantity | float, *args, **kwargs):
+    def __call__(self, H: float, *args, **kwargs):
         ...
 
 
