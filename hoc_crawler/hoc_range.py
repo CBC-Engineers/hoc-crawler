@@ -115,7 +115,7 @@ def hoc_range(*args) -> HOCRange:
             raise HOCRangeError(
                 f'Missing units from: {"; ".join(f"{k}= {v}" for k,v in no_units.items())}'
             )
-        sss_dict.update({k: v * first_unit for k, v in no_units.items()})
+        sss_dict.update({k: (v * first_unit) if v is not None else v for k, v in no_units.items()})
 
     return HOCRange(**sss_dict)
 
