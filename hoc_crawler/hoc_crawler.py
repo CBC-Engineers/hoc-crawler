@@ -27,11 +27,15 @@ def crawl(
     flooded: bool = False,
     hoc: tuple[int | float | None] | HOCRange | None = None,
     *args,
+    forgiveness_level: int = 0,
     **kwargs,
 ) -> float:
     """Attempts different cover heights until the limit (max or min) is identified.
 
     Units assumed to be feet unless otherwise specified.
+
+    The forgiveness_level parameter controls how many times a failure is allowed to happen before the end of the
+    algorithm has been considered to have been reached.
     """
 
     match target:
@@ -57,7 +61,10 @@ def crawl(
     iter_hoc = {target.max: hoc.iter_up(), target.min: hoc.iter_down()}[target]
     prev_hoc = None
 
+    forgiven_runs = []
     for h in iter_hoc:
+        if len(forgiven_runs) > forgiveness_level:
+            break
         kwargs["H"] = h
         if flooded:
             kwargs["H_gw"] = h
@@ -65,9 +72,12 @@ def crawl(
         try:
             func(*args, **kwargs)
         except InvalidHOC:
-            break
+            forgiven_runs.append(h)
+            continue
         else:
             prev_hoc = h
+            if forgiven_runs:
+                forgiven_runs.clear()
 
     if prev_hoc is not None:
         return prev_hoc
