@@ -22,6 +22,18 @@ def func_10_max():
     return f
 
 
+@fixture
+def func_10_max_2_no_good():
+    def f(H, H_gw):
+        if H <= 10:
+            if H == 2:
+                raise InvalidHOC()
+            return "OK"
+        raise InvalidHOC()
+
+    return f
+
+
 @fixture(
     params=[
         (dict(target="Max", flooded=True, hoc=(2, 9)), 9),
@@ -45,3 +57,11 @@ def test_crawl_invalid(func_all_invalid: SupportsHOC, kwargs_and_result):
     kwargs, _ = kwargs_and_result
     with pytest.raises(CrawlerError):
         crawl(func_all_invalid, **kwargs)
+
+
+def test_crawl_forgiveness_1(func_10_max_2_no_good: SupportsHOC):
+    assert crawl(func_10_max_2_no_good, target="Max", flooded=True, hoc=(1, 10), forgiveness_level=1) == 10
+
+
+def test_crawl_forgiveness_0(func_10_max_2_no_good: SupportsHOC):
+    assert crawl(func_10_max_2_no_good, target="Max", flooded=True, hoc=(1, 10), forgiveness_level=0) == 1
