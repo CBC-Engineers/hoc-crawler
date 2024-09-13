@@ -6,7 +6,6 @@ build-backend = "flit_core.buildapi"
 name = "hoc_crawler"
 authors = [{name = "Ricky L Teachey Jr", email = "ricky@teachey.org"}]
 license = {file = "LICENSE"}
-classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
 dependencies = []
 
